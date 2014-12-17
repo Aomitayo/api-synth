@@ -1,0 +1,24 @@
+{
+  "name": "api-synth",
+  "version": "0.0.1",
+  "description": "A Toolkit for implementing web APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aomitayo/api-synth.git"
+  },
+  "keywords": [
+    "api",
+    "api-first",
+    "swagger"
+  ],
+  "author": "adedayo omitayo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Aomitayo/api-synth/issues"
+  },
+  "homepage": "https://github.com/Aomitayo/api-synth"
+}
