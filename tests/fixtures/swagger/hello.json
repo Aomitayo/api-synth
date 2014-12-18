@@ -1,0 +1,186 @@
+{
+	"swaggerVersion": "1.2",
+	"apiVersion":"1.0.0",
+	"basePath": "/",
+	"resourcePath": "/hello",
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"authorizations":{
+		"oauth2":[{
+			"scope":"Hello",
+			"description": "Access to your Hello or Locations"
+		}]
+	},
+	"models":{
+		"Error":{
+			"id": "Error",
+			"description": "The description of an error",
+			"required": ["id", "description"],
+			"properties":{
+				"id":{"type":"string"},
+				"description":{"type":"string"},
+				"errors":{"type":"array", "items":{"$ref":"ValidationError"}}
+			}
+		}
+	},
+	"apis": [
+		{
+			"path": "/hello",
+			"description": "The collection of hello",
+			"operations":[
+				{
+					"method": "GET",
+					"summary": "Say hello",
+					"nickname": "sayHello",
+					"type": "string",
+					"responseMessages": [
+						{
+							"code": 403,
+							"message": "Access Denied"
+						},
+						{
+							"code": 400,
+							"message": "Invalid query",
+							"responseModel": "Error"
+						},
+						{
+							"code": 200,
+							"message": "Successful query"
+						}
+					],
+					"parameters":[]
+				}
+			]
+		},
+		{
+			"path": "/hello/{person}",
+			"description": "Hello To a person",
+			"operations":[
+				{
+					"method": "GET",
+					"summary": "Say hello to a person",
+					"nickname": "helloPerson",
+					"type": "string",
+					"responseMessages": [
+						{
+							"code": 403,
+							"message": "Access Denied"
+						},
+						{
+							"code": 400,
+							"message": "Invalid query",
+							"responseModel": "Error"
+						},
+						{
+							"code": 200,
+							"message": "Successful query"
+						}
+					],
+					"parameters":[
+						{
+							"name": "person",
+							"type": "string",
+							"paramType": "path",
+							"description": "name of the person",
+							"required": true
+						}
+					]
+				},
+				{
+					"method": "POST",
+					"summary": "Say hello to a data from file",
+					"nickname": "helloPersonData",
+					"type": "string",
+					"responseMessages": [
+						{
+							"code": 403,
+							"message": "Access Denied"
+						},
+						{
+							"code": 400,
+							"message": "Invalid query",
+							"responseModel": "Error"
+						},
+						{
+							"code": 200,
+							"message": "Successful query"
+						}
+					],
+					"parameters":[
+						{
+							"name": "hellodata",
+							"type": "string",
+							"paramType": "file",
+							"description": "data for hello",
+							"required": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"path": "/greetings",
+			"description": "The collection of greetings",
+			"operations":[
+				{
+					"method": "GET",
+					"summary": "Greetings collection",
+					"nickname": "getGreetings",
+					"type": "string",
+					"responseMessages": [
+						{
+							"code": 403,
+							"message": "Access Denied"
+						},
+						{
+							"code": 400,
+							"message": "Invalid query",
+							"responseModel": "Error"
+						},
+						{
+							"code": 200,
+							"message": "Successful query"
+						}
+					],
+					"parameters":[]
+				},
+				{
+					"method": "POST",
+					"summary": "Greetings",
+					"nickname": "createGreeting",
+					"type": "string",
+					"responseMessages": [
+						{
+							"code": 403,
+							"message": "Access Denied"
+						},
+						{
+							"code": 400,
+							"message": "Invalid query",
+							"responseModel": "Error"
+						},
+						{
+							"code": 201,
+							"message": "Successful create"
+						}
+					],
+					"parameters":[
+						{
+							"name": "body",
+							"type": "object",
+							"paramType": "body",
+							"description": "greeting",
+							"required": true
+						},
+						{
+							"name": "greetings",
+							"type": "File",
+							"paramType": "File",
+							"description": "A file of greetings"
+						}
+					]
+				}
+			]
+		}
+	]
+}
