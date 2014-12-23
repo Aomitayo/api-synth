@@ -5,7 +5,7 @@
 var fs = require('fs');
 var expect = require('chai').expect;
 var supertest = require('supertest');
-var routing = require(__dirname + '/../../');
+var apiSynth = require(__dirname + '/../../');
 
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -13,10 +13,14 @@ var multipart = require('connect-multiparty');
 
 describe('Without Content negotiation', function(){
 	var app;
-	before(function(){
-		var router = routing.useSpec('swagger', {specDir: __dirname + '/../fixtures/swagger'});
+	var api;
+	before(function(done){
+		api = apiSynth();
+		api.useSpec('swagger', {specDir: __dirname + '/../fixtures/swagger'}, done);
+	});
 
-		router.hooks.register('sayHello', function(command, cb){
+	before(function(){
+		api.hooks.register('sayHello', function(command, cb){
 			cb(null, 'hello world', {
 				status:200
 			});
@@ -27,7 +31,7 @@ describe('Without Content negotiation', function(){
 		app.use(bodyParser.json({type:['*/json']}));
 		app.use(multipart());
 		app.use(cookieParser());
-		app.use(router);
+		app.use(api.http);
 	});	
 
 	it('Return result from hook', function(done){
@@ -41,22 +45,27 @@ describe('Without Content negotiation', function(){
 	});
 });
 
-describe('Content negotiation by rest end point', function(){
+describe('Content negotiation at rest end point', function(){
 	var app;
-	before(function(){
-		var router = routing.useSpec('swagger', {specDir: __dirname + '/../fixtures/swagger'});
+	var api;
+	
+	before(function(done){
+		api = apiSynth();
+		api.useSpec('swagger', {specDir: __dirname + '/../fixtures/swagger'}, done);
+	});
 
-		router.hooks.register('sayHello', function(command, cb){
-			cb(null, 'hello world', {
+	before(function(){
+		api.hooks.register('sayHello', function(command, cb){
+			cb(null, 'hello world', { http:{
 				status:200,
-				negotiate:{
+				negotiation:{
 					'application/html5': 'hello world html',
 					'application/json':{resources: 'hello world property'},
 					'application/vnd.rest-spec': function(res, body, status, headers){
 						res.send(body + ' function');
 					}
 				}
-			});
+			}});
 		});
 
 		app = require('express')();
@@ -64,7 +73,7 @@ describe('Content negotiation by rest end point', function(){
 		app.use(bodyParser.json({type:['*/json']}));
 		app.use(multipart());
 		app.use(cookieParser());
-		app.use(router);
+		app.use(api.http);
 	});	
 
 	it('Will return result from hook by default', function(done){
@@ -114,10 +123,16 @@ describe('Content negotiation by rest end point', function(){
 
 describe('Content negotiation by middleware', function(){
 	var app;
+	var api;
+	
+	before(function(done){
+		api = apiSynth();
+		api.useSpec('swagger', {specDir: __dirname + '/../fixtures/swagger'}, done);
+	});
+
 	before(function(){
-		var router = require('express').Router();
-		router.use(function negotiator(req, res, next){
-			req.negotiate = {
+		api.http.use(function negotiator(req, res, next){
+			req.negotiation = {
 				'application/html5': 'hello world html',
 				'application/json':{resources: 'hello world property'},
 				'application/vnd.rest-spec': function(res, body, status, headers){
@@ -127,10 +142,9 @@ describe('Content negotiation by middleware', function(){
 
 			next();
 		});
-		routing.putSpec(router, 'swagger', {specDir: __dirname + '/../fixtures/swagger'});
 		
 
-		router.hooks.register('sayHello', function(command, cb){
+		api.hooks.register('sayHello', function(command, cb){
 			cb(null, 'hello world', {status:200});
 		});
 
@@ -139,7 +153,7 @@ describe('Content negotiation by middleware', function(){
 		app.use(bodyParser.json({type:['*/json']}));
 		app.use(multipart());
 		app.use(cookieParser());
-		app.use(router);
+		app.use(api.http);
 	});	
 
 	it('Will return result from hook by default', function(done){
@@ -185,5 +199,4 @@ describe('Content negotiation by middleware', function(){
 			done(err);
 		});
 	});
-
 });
