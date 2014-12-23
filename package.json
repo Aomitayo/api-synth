@@ -1,6 +1,6 @@
 {
   "name": "api-synth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A Toolkit for implementing web APIs",
   "main": "index.js",
   "scripts": {
@@ -37,5 +37,5 @@
     "supertest": "^0.13.0",
     "sinon": "~1.8.2",
     "sinon-chai": "~2.5.0"
-  }  
+  }
 }
