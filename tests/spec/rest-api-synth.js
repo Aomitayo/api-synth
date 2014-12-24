@@ -139,9 +139,9 @@ describe('Api-synth middleware system', function(){
 			expect(res.text).to.equal('hello world');
 			expect(stub).to.have.been.calledOnce;
 			expect(stub.args[0][0]).to.have.property('operation');
-			expect(stub.args[0][0].operation).to.have.property('authRestriction');
-			expect(stub.args[0][0].operation.authRestriction).to.have.length(1);
-			expect(stub.args[0][0].operation.authRestriction[0]).to.have.property('type', 'oauth2');
+			expect(stub.args[0][0].operation).to.have.property('authRestrictions');
+			expect(stub.args[0][0].operation.authRestrictions).to.have.length(1);
+			expect(stub.args[0][0].operation.authRestrictions[0]).to.have.property('type', 'oauth2');
 			done(err);
 		});
 	});
