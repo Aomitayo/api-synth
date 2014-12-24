@@ -112,6 +112,39 @@ describe('Api-synth middleware system', function(){
 			done(err);
 		});
 	});
+
+	it('Middleware can access operation', function(done){
+		var stub = sinon.stub().callsArgWith(2, null, {});
+		api.http.use('sayHello', stub);
+
+		supertest(app)
+		.get('/hello')
+		.expect(200)
+		.end(function(err, res){
+			expect(res.text).to.equal('hello world');
+			expect(stub).to.have.been.calledOnce;
+			expect(stub.args[0][0]).to.have.property('operation');
+			done(err);
+		});
+	});
+
+	it('Middleware can access operation authorization specifications', function(done){
+		var stub = sinon.stub().callsArgWith(2, null, {});
+		api.http.use('sayHello', stub);
+
+		supertest(app)
+		.get('/hello')
+		.expect(200)
+		.end(function(err, res){
+			expect(res.text).to.equal('hello world');
+			expect(stub).to.have.been.calledOnce;
+			expect(stub.args[0][0]).to.have.property('operation');
+			expect(stub.args[0][0].operation).to.have.property('authRestriction');
+			expect(stub.args[0][0].operation.authRestriction).to.have.length(1);
+			expect(stub.args[0][0].operation.authRestriction[0]).to.have.property('type', 'oauth2');
+			done(err);
+		});
+	});
 });
 
 describe('rest spec commands and callbacks', function(){
