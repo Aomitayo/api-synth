@@ -1,6 +1,6 @@
 {
   "name": "api-synth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Toolkit for implementing web APIs",
   "main": "index.js",
   "scripts": {
